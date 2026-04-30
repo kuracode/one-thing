@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="one_thing.css">
+</head>
+<body>
+<canvas id="confetti-canvas"></canvas>
+<div class="app">
+  <div class="header">
+    <h1>one thing.</h1>
+    <p>One thing. Just for today.</p>
+    <p style="font-family:'DM Serif Display',serif;font-style:italic;font-size:0.85rem;color:var(--ink-soft);margin-top:0.5rem;font-weight:400;line-height:1.6;">Pick one small thing. Do it. Let the rest wait.</p>
+  </div>
+  <div class="tabs">
+    <button class="tab active" id="tab-today" onclick="switchTab('today')">I will</button>
+    <button class="tab" id="tab-wins" onclick="switchTab('wins')">I did it</button>
+  </div>
+  <div class="page" id="page-today">
+    <div id="task-area" style="width:100%;display:flex;flex-direction:column;gap:1.5rem;align-items:center;"></div>
+    <div class="quote-section">
+      <div class="quote-mark">"</div>
+      <p class="quote-text" id="qt"></p>
+      <p class="quote-author" id="qa"></p>
+    </div>
+  </div>
+  <div class="page hidden" id="page-wins">
+    <div id="wins-area" style="width:100%;display:flex;flex-direction:column;gap:1.5rem;align-items:center;"></div>
+  </div>
+</div>
+<script src="one_thing.js"></script>
+</body>
+</html>
