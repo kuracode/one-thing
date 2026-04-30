@@ -1,10 +1,10 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --sage:#4a7c6f;--sage-light:#e8f0ee;--sage-mid:#8ab5aa;
-  --warm:#f5f0e8;--warm-mid:#ede8de;--warm-dark:#e8dfd0;--warm-card:#f0ece2;
+  --warm:#f5f0e8;--warm-dark:#e8dfd0;--warm-card:#f0ece2;
   --ink:#1a1a18;--ink-mid:#5a5a54;--ink-soft:#9a9a90;
   --gold:#c4983a;--gold-light:#f5ecd4;--gold-pale:#fdf8ee;
-  --danger:#b85a4a;--radius:16px;
+  --radius:16px;
 }
 body{font-family:'DM Sans',sans-serif;background:var(--warm);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:2rem 1rem 4rem;position:relative;overflow-x:hidden;}
 #confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;}
@@ -58,13 +58,6 @@ textarea:focus{border-color:var(--sage-mid);}
 .wins-entry-day{font-size:0.72rem;color:var(--ink-soft);font-weight:500;letter-spacing:0.04em;margin-top:0.1rem;}
 .wins-entry-day.gold{color:var(--gold);}
 .wins-letter-close{font-family:'DM Serif Display',serif;font-size:0.95rem;color:var(--ink-soft);font-style:italic;text-align:center;line-height:1.7;border-top:1px solid var(--warm-dark);padding-top:1.5rem;width:100%;}
-.celebrate-header{text-align:center;width:100%;padding-top:0.5rem;}
-.celebrate-header h2{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--ink);font-style:italic;}
-.empty-state{width:100%;text-align:center;padding:1rem 0;display:flex;flex-direction:column;align-items:center;gap:1.25rem;}
-.season-icon{font-size:2.8rem;line-height:1;}
-.empty-heading{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--ink);font-style:italic;line-height:1.4;}
-.empty-quote{font-family:'DM Serif Display',serif;font-size:0.95rem;color:var(--ink-soft);font-style:italic;line-height:1.6;}
-.empty-author{font-size:0.72rem;color:var(--ink-soft);font-weight:500;letter-spacing:0.04em;margin-top:-0.5rem;}
 .onboarding-overlay{position:fixed;inset:0;background:var(--warm);z-index:1000;display:flex;align-items:center;justify-content:center;padding:2rem 1.5rem;transition:opacity 0.4s,visibility 0.4s;}
 .onboarding-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none;}
 .onboarding-card{max-width:400px;width:100%;display:flex;flex-direction:column;align-items:center;gap:2rem;text-align:center;}

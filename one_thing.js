@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'one_thing_v3';
+const STORAGE_KEY = 'one_thing';
 
 const quotes = [
   { text: "Even the darkest night will end, and the sun will rise.", author: "Victor Hugo" },
@@ -29,33 +29,14 @@ function getDayOfYear() {
 }
 const todayPrompt = dailyPrompts[getDayOfYear() % dailyPrompts.length];
 
-function getSeasonIcon() {
-  const m = new Date().getMonth();
-  if (m >= 2 && m <= 4) return '🌱';
-  if (m >= 5 && m <= 7) return '🌸';
-  if (m >= 8 && m <= 10) return '🍂';
-  return '🌾';
-}
-
-// Gentle day format: "a quiet Tuesday in March"
 function gentleDay(ts) {
   const d = new Date(ts);
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const adj = ['quiet', 'gentle', 'soft', 'still', 'slow'];
-  const a = adj[d.getDate() % adj.length];
-  return `a ${a} ${days[d.getDay()]} in ${months[d.getMonth()]}`;
+  return `a ${adj[d.getDate() % adj.length]} ${days[d.getDay()]} in ${months[d.getMonth()]}`;
 }
 
-const emptyQuotes = [
-  { text: "It is never too late to begin.", author: "George Eliot" },
-  { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
-  { text: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
-  { text: "A journey of a thousand miles begins with a single step.", author: "Lao Tzu" },
-  { text: "Small deeds done are better than great deeds planned.", author: "Peter Marshall" },
-];
-
-// Toned-down, genuinely warm encouragements — no motivational-poster energy
 const restMessages = [
   { heading: "today was enough.", body: "Letting something go is not failure. It is knowing yourself. Tomorrow is a fresh, unhurried start." },
   { heading: "that's okay.", body: "Some days the kindest thing you can do is set something down. Rest, and come back when you're ready." },
@@ -65,15 +46,15 @@ const restMessages = [
 ];
 
 const MOCK_WINS = [
-  { task: "Replied to that email I'd been avoiding", done: true, ts: Date.now() - 1 * 86400000, mock: true },
-  { task: "Made myself a proper meal instead of snacking", done: true, ts: Date.now() - 2 * 86400000, mock: true },
-  { task: "Went outside for a 10-minute walk", done: true, ts: Date.now() - 3 * 86400000, mock: true },
-  { task: "Called mom back", done: true, ts: Date.now() - 5 * 86400000, mock: true },
-  { task: "Washed the dishes", done: true, ts: Date.now() - 6 * 86400000, mock: true },
-  { task: "Read one chapter of a book", done: true, ts: Date.now() - 8 * 86400000, mock: true },
-  { task: "I showed up today", done: true, ts: Date.now() - 9 * 86400000, mock: true },
-  { task: "Tidied the desk", done: true, ts: Date.now() - 11 * 86400000, mock: true },
-  { task: "Took a shower and got dressed", done: true, ts: Date.now() - 13 * 86400000, mock: true },
+  { task: "Replied to that email I'd been avoiding", done: true, ts: Date.now() - 1 * 86400000 },
+  { task: "Made myself a proper meal instead of snacking", done: true, ts: Date.now() - 2 * 86400000 },
+  { task: "Went outside for a 10-minute walk", done: true, ts: Date.now() - 3 * 86400000 },
+  { task: "Called mom back", done: true, ts: Date.now() - 5 * 86400000 },
+  { task: "Washed the dishes", done: true, ts: Date.now() - 6 * 86400000 },
+  { task: "Read one chapter of a book", done: true, ts: Date.now() - 8 * 86400000 },
+  { task: "I showed up today", done: true, ts: Date.now() - 9 * 86400000 },
+  { task: "Tidied the desk", done: true, ts: Date.now() - 11 * 86400000 },
+  { task: "Took a shower and got dressed", done: true, ts: Date.now() - 13 * 86400000 },
 ];
 
 function loadState() { try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : null; } catch { return null; } }
@@ -84,7 +65,6 @@ let state = loadState() || freshState();
 function silentResetIfExpired() {
   if (state.task && !state.completedAt && state.setAt) {
     if (Date.now() - state.setAt > 24 * 60 * 60 * 1000) {
-      // Expired tasks leave no trace — just quietly clear
       state.task = null; state.setAt = null; state.completedAt = null; state.showRest = false;
       saveState(state);
     }
@@ -95,12 +75,8 @@ function getDisplayWins() {
   const real = state.history.filter(h => h.done);
   const combined = real.length > 0 ? real : MOCK_WINS;
   combined.sort((a, b) => b.ts - a.ts);
-  const featured = combined[0];
-  const rest = combined.slice(1, 7);
-  return [featured, ...rest];
+  return [combined[0], ...combined.slice(1, 7)];
 }
-
-function randFrom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 function escapeHtml(str) {
   return str
