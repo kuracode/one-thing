@@ -93,10 +93,10 @@ function silentResetIfExpired() {
 
 function getDisplayWins() {
   const real = state.history.filter(h => h.done);
-  const combined = [...real, ...MOCK_WINS];
+  const combined = real.length > 0 ? real : MOCK_WINS;
   combined.sort((a, b) => b.ts - a.ts);
   const featured = combined[0];
-  const rest = combined.slice(1).slice(0, 6);
+  const rest = combined.slice(1, 7);
   return [featured, ...rest];
 }
 
@@ -156,32 +156,18 @@ function switchTab(tab) {
 
 function renderWins() {
   const root = document.getElementById('wins-area');
-  const realWins = state.history.filter(h => h.done);
-  let html = '';
-
-  if (realWins.length === 0) {
-    const eq = randFrom(emptyQuotes);
-    const icon = getSeasonIcon();
-    html += `<div class="empty-state">
-      <div class="season-icon">${icon}</div>
-      <p class="empty-heading">Your story begins whenever you're ready.</p>
-      <p class="empty-quote">${eq.text}</p>
-      <p class="empty-author">— ${eq.author}</p>
-    </div>`;
-  } else {
-    const wins = getDisplayWins();
-    const featured = wins[0];
-    const rest = wins.slice(1);
-    html += `<div class="wins-letter">`;
-    html += `<p class="wins-letter-heading">look what you have carried.</p>`;
-    html += `<p class="wins-letter-intro">On each of these days, you chose yourself.<br>That is no small thing.</p>`;
-    html += `<div class="wins-entry featured"><p class="wins-entry-sentence featured">on ${gentleDay(featured.ts)}, you — ${escapeHtml(featured.task.toLowerCase().replace(/\.$/, ''))}.${featured.task.endsWith('.') ? '' : ''}</p><p class="wins-entry-day gold">${gentleDay(featured.ts)}</p></div>`;
-    rest.forEach(h => {
-      html += `<div class="wins-entry"><p class="wins-entry-sentence">on ${gentleDay(h.ts)}, you — ${escapeHtml(h.task.toLowerCase().replace(/\.$/, ''))}.${h.task.endsWith('.') ? '' : ''}</p><p class="wins-entry-day">${gentleDay(h.ts)}</p></div>`;
-    });
-    html += `<p class="wins-letter-close">Every single one of those was a day you chose yourself.<br><br>— one thing.</p>`;
-    html += `</div>`;
-  }
+  const wins = getDisplayWins();
+  const featured = wins[0];
+  const rest = wins.slice(1);
+  let html = `<div class="wins-letter">`;
+  html += `<p class="wins-letter-heading">look what you have carried.</p>`;
+  html += `<p class="wins-letter-intro">On each of these days, you chose yourself.<br>That is no small thing.</p>`;
+  html += `<div class="wins-entry featured"><p class="wins-entry-sentence featured">on ${gentleDay(featured.ts)}, you — ${escapeHtml(featured.task.toLowerCase().replace(/\.$/, ''))}.</p><p class="wins-entry-day gold">${gentleDay(featured.ts)}</p></div>`;
+  rest.forEach(h => {
+    html += `<div class="wins-entry"><p class="wins-entry-sentence">on ${gentleDay(h.ts)}, you — ${escapeHtml(h.task.toLowerCase().replace(/\.$/, ''))}.</p><p class="wins-entry-day">${gentleDay(h.ts)}</p></div>`;
+  });
+  html += `<p class="wins-letter-close">Every single one of those was a day you chose yourself.<br><br>— one thing.</p>`;
+  html += `</div>`;
   root.innerHTML = html;
 }
 
@@ -268,3 +254,16 @@ function newDay() {
 }
 
 render();
+
+// Onboarding
+function dismissOnboarding() {
+  document.getElementById('onboarding').classList.add('hidden');
+  try { localStorage.setItem('one_thing_onboarded', '1'); } catch {}
+}
+(function initOnboarding() {
+  try {
+    if (localStorage.getItem('one_thing_onboarded')) {
+      document.getElementById('onboarding').classList.add('hidden');
+    }
+  } catch {}
+})();
