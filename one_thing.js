@@ -64,7 +64,9 @@ let state = loadState() || freshState();
 
 function silentResetIfExpired() {
   if (state.task && !state.completedAt && state.setAt) {
-    if (Date.now() - state.setAt > 24 * 60 * 60 * 1000) {
+    const setDay = new Date(state.setAt);
+    const expiresAt = new Date(setDay.getFullYear(), setDay.getMonth(), setDay.getDate() + 1).getTime();
+    if (Date.now() >= expiresAt) {
       state.task = null; state.setAt = null; state.completedAt = null; state.showRest = false;
       saveState(state);
     }
