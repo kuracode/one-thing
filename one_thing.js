@@ -140,9 +140,9 @@ function renderWins() {
   let html = `<div class="wins-letter">`;
   html += `<p class="wins-letter-heading">look what you have carried.</p>`;
   html += `<p class="wins-letter-intro">On each of these days, you chose yourself.<br>That is no small thing.</p>`;
-  html += `<div class="wins-entry featured"><p class="wins-entry-sentence featured">on ${gentleDay(featured.ts)}, you — ${escapeHtml(featured.task.toLowerCase().replace(/\.$/, ''))}.</p><p class="wins-entry-day gold">${gentleDay(featured.ts)}</p></div>`;
+  html += `<div class="wins-entry featured"><p class="wins-entry-sentence featured">on ${gentleDay(featured.ts)} — ${escapeHtml(featured.task.toLowerCase().replace(/\.$/, ''))}.</p><p class="wins-entry-day gold">${gentleDay(featured.ts)}</p></div>`;
   rest.forEach(h => {
-    html += `<div class="wins-entry"><p class="wins-entry-sentence">on ${gentleDay(h.ts)}, you — ${escapeHtml(h.task.toLowerCase().replace(/\.$/, ''))}.</p><p class="wins-entry-day">${gentleDay(h.ts)}</p></div>`;
+    html += `<div class="wins-entry"><p class="wins-entry-sentence">on ${gentleDay(h.ts)} — ${escapeHtml(h.task.toLowerCase().replace(/\.$/, ''))}.</p><p class="wins-entry-day">${gentleDay(h.ts)}</p></div>`;
   });
   html += `<p class="wins-letter-close">Every single one of those was a day you chose yourself.<br><br>— one thing.</p>`;
   html += `</div>`;
