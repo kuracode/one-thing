@@ -29,12 +29,14 @@ function getDayOfYear() {
 }
 const todayPrompt = dailyPrompts[getDayOfYear() % dailyPrompts.length];
 
+const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 function gentleDay(ts) {
   const d = new Date(ts);
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const adj = ['quiet', 'gentle', 'soft', 'still', 'slow'];
-  return `a ${adj[d.getDate() % adj.length]} ${days[d.getDay()]} in ${months[d.getMonth()]}`;
+  return `a ${adj[d.getDay() % adj.length]} ${days[d.getDay()]} in ${months[d.getMonth()]}`;
 }
 
 const restMessages = [
@@ -57,9 +59,25 @@ const MOCK_WINS = [
   { task: "Took a shower and got dressed", done: true, ts: Date.now() - 13 * 86400000 },
 ];
 
-function loadState() { try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : null; } catch { return null; } }
+const STATE_VERSION = 1;
+
+function loadState() {
+  try {
+    const r = localStorage.getItem(STORAGE_KEY);
+    if (!r) return null;
+    const s = JSON.parse(r);
+    if (s.version !== STATE_VERSION) {
+      return freshState();
+    }
+    return s;
+  } catch { return null; }
+}
+
 function saveState(s) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch {} }
-function freshState() { return { task: null, setAt: null, completedAt: null, history: [], showRest: false, restMsgIndex: null }; }
+
+function freshState() {
+  return { version: STATE_VERSION, task: null, setAt: null, completedAt: null, history: [], showRest: false, restMsgIndex: null };
+}
 let state = loadState() || freshState();
 
 function silentResetIfExpired() {
@@ -75,8 +93,9 @@ function silentResetIfExpired() {
 
 function getDisplayWins() {
   const real = state.history.filter(h => h.done);
-  const combined = real.length > 0 ? real : MOCK_WINS;
+  const combined = (real.length > 0 ? real : MOCK_WINS).slice();
   combined.sort((a, b) => b.ts - a.ts);
+  if (combined.length === 0) return MOCK_WINS.slice();
   return [combined[0], ...combined.slice(1, 7)];
 }
 
@@ -90,6 +109,7 @@ function escapeHtml(str) {
 }
 
 function launchConfetti() {
+  if (REDUCED_MOTION) return;
   const canvas = document.getElementById('confetti-canvas');
   const ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -124,12 +144,25 @@ function launchConfetti() {
 }
 
 function switchTab(tab) {
-  document.getElementById('tab-today').classList.toggle('active', tab === 'today');
-  document.getElementById('tab-wins').classList.toggle('active', tab === 'wins');
-  document.getElementById('page-today').classList.toggle('hidden', tab !== 'today');
-  document.getElementById('page-wins').classList.toggle('hidden', tab !== 'wins');
+  const tabToday = document.getElementById('tab-today');
+  const tabWins = document.getElementById('tab-wins');
+  tabToday.classList.toggle('active', tab === 'today');
+  tabWins.classList.toggle('active', tab === 'wins');
+  tabToday.setAttribute('aria-selected', String(tab === 'today'));
+  tabWins.setAttribute('aria-selected', String(tab === 'wins'));
+  const pageToday = document.getElementById('page-today');
+  const pageWins = document.getElementById('page-wins');
+  pageToday.classList.toggle('hidden', tab !== 'today');
+  pageWins.classList.toggle('hidden', tab !== 'wins');
+  pageToday.hidden = tab !== 'today';
+  pageWins.hidden = tab !== 'wins';
   if (tab === 'wins') renderWins();
   if (tab === 'today') render();
+}
+
+function focusTaskInput() {
+  const input = document.getElementById('task-input');
+  if (input) input.focus();
 }
 
 function renderWins() {
@@ -165,7 +198,7 @@ function render() {
   } else if (!state.task) {
     html += `<div class="card"><div class="input-area">
       <p class="input-prelude">${todayPrompt}</p>
-      <textarea id="task-input" rows="2" maxlength="200" placeholder="whatever comes to mind" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();setTask();}"></textarea>
+      <textarea id="task-input" rows="2" maxlength="200" placeholder="whatever comes to mind" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();setTask();}" autofocus></textarea>
       <button class="set-btn" onclick="setTask()">set my one thing</button>
       <button class="just-exist-link" onclick="justExist()">or just — I showed up today →</button>
     </div></div>`;
@@ -188,6 +221,10 @@ function render() {
   }
 
   area.innerHTML = html;
+
+  if (!state.task && !state.showRest) {
+    focusTaskInput();
+  }
 }
 
 function setTask() {

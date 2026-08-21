@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#4a7c6f">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="one_thing.css">
 <script defer src="https://cloud.umami.is/script.js" data-website-id="608db8a9-73e1-4fbf-856d-6e1c40951d3e"></script>
@@ -18,7 +19,7 @@
       This app asks for just one thing — the smallest step you can take today.<br><br>
       No streaks. No pressure. Just one thing.
     </p>
-    <button class="onboarding-btn" onclick="dismissOnboarding()">I'm ready</button>
+    <button class="onboarding-btn" onclick="dismissOnboarding()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();dismissOnboarding();}" autofocus>I'm ready</button>
     <p class="onboarding-fine">we'll remember you've been here — this won't show again</p>
   </div>
 </div>
@@ -28,20 +29,20 @@
     <p>One thing. Just for today.</p>
     <p style="font-family:'DM Serif Display',serif;font-style:italic;font-size:0.85rem;color:var(--ink-soft);margin-top:0.5rem;font-weight:400;line-height:1.6;">Pick one small thing. Do it. Let the rest wait.</p>
   </div>
-  <div class="tabs">
-    <button class="tab active" id="tab-today" onclick="switchTab('today')">I will</button>
-    <button class="tab" id="tab-wins" onclick="switchTab('wins')">I did it</button>
+  <div class="tabs" role="tablist" aria-label="Views">
+    <button class="tab active" id="tab-today" role="tab" aria-selected="true" aria-controls="page-today" onclick="switchTab('today')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('today');}">I will</button>
+    <button class="tab" id="tab-wins" role="tab" aria-selected="false" aria-controls="page-wins" onclick="switchTab('wins')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('wins');}">I did it</button>
   </div>
-  <div class="page" id="page-today">
-    <div id="task-area" style="width:100%;display:flex;flex-direction:column;gap:1.5rem;align-items:center;"></div>
+  <div class="page" id="page-today" role="tabpanel" aria-labelledby="tab-today">
+    <div id="task-area" style="width:100%;display:flex;flex-direction:column;gap:1.5rem;align-items:center;" aria-live="polite"></div>
     <div class="quote-section">
       <div class="quote-mark">"</div>
       <p class="quote-text" id="qt"></p>
       <p class="quote-author" id="qa"></p>
     </div>
   </div>
-  <div class="page hidden" id="page-wins">
-    <div id="wins-area" style="width:100%;display:flex;flex-direction:column;gap:1.5rem;align-items:center;"></div>
+  <div class="page hidden" id="page-wins" role="tabpanel" aria-labelledby="tab-wins" hidden>
+    <div id="wins-area" style="width:100%;display:flex;flex-direction:column;gap:1.5rem;align-items:center;" aria-live="polite"></div>
   </div>
 </div>
 <script src="one_thing.js"></script>
